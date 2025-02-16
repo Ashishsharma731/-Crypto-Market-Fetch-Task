@@ -11,7 +11,7 @@ class BybitService {
         const bybitWS = new WebSocket(url);
 
         bybitWS.on("open", () => {
-            logger.info(`✅ Bybit ${marketType} WebSocket connected`);
+            logger.info(` Bybit ${marketType} WebSocket connected`);
             const subscribeMessage = {
                 op: "subscribe",
                 args: [`publicTrade.BTCUSDT`]
@@ -34,7 +34,7 @@ class BybitService {
                     broadcast(formattedData);
                 }
             } catch (error) {
-                logger.error(`❌ Bybit ${marketType} parsing error: ${error.message}`);
+                logger.error(` Bybit ${marketType} parsing error: ${error.message}`);
             }
         });
 

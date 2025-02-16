@@ -11,7 +11,7 @@ class MEXCService {
         const mexcWS = new WebSocket(url);
 
         mexcWS.on("open", () => {
-            logger.info(`✅ MEXC ${marketType} WebSocket connected`);
+            logger.info(` MEXC ${marketType} WebSocket connected`);
             const subscribeMessage = {
                 method: "SUBSCRIPTION",
                 params: [`trade.BTC_USDT`]
@@ -34,7 +34,7 @@ class MEXCService {
                     broadcast(formattedData);
                 }
             } catch (error) {
-                logger.error(`❌ MEXC ${marketType} parsing error: ${error.message}`);
+                logger.error(` MEXC ${marketType} parsing error: ${error.message}`);
             }
         });
 

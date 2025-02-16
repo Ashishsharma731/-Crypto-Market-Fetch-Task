@@ -11,7 +11,7 @@ class KucoinService {
         const kucoinWS = new WebSocket(url);
 
         kucoinWS.on("open", () => {
-            logger.info(`✅ Kucoin ${marketType} WebSocket connected`);
+            logger.info(` Kucoin ${marketType} WebSocket connected`);
             const subscribeMessage = {
                 id: Date.now(),
                 type: "subscribe",
@@ -37,7 +37,7 @@ class KucoinService {
                     broadcast(formattedData);
                 }
             } catch (error) {
-                logger.error(`❌ Kucoin ${marketType} parsing error: ${error.message}`);
+                logger.error(` Kucoin ${marketType} parsing error: ${error.message}`);
             }
         });
 

@@ -10,7 +10,7 @@ class BinanceService {
         
         const binanceWS = new WebSocket(url);
 
-        binanceWS.on("open", () => logger.info(`✅ Binance ${marketType} WebSocket connected`));
+        binanceWS.on("open", () => logger.info(` Binance ${marketType} WebSocket connected`));
 
         binanceWS.on("message", (data) => {
             const parsedData = JSON.parse(data);
