@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+server/node_modules
+crypto-websockets/node_modules
 /.pnp
 .pnp.*
 .yarn/*
