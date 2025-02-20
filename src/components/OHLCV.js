@@ -23,7 +23,6 @@ const OHLCV = () => {
   const fetchOHLCV = async () => {
     setLoading(true);
     try {
-      console.log("Fetching OHLCV data:", { exchange, marketType, symbol, interval });
 
       const res = await axios.get(`http://localhost:5000/api/ohlcv`, {
         params: { exchange, marketType, symbol, interval, limit: 50 },
