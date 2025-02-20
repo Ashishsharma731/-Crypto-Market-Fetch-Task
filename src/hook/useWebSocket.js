@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 
-// Your backend WebSocket server URLs
-const SPOT_WS_URL = "ws://localhost:6000";   // Replace with your Spot WebSocket server
-const FUTURES_WS_URL = "ws://localhost:7000"; // Replace with your Futures WebSocket server
+const SPOT_WS_URL = "ws://localhost:6000";   
+const FUTURES_WS_URL = "ws://localhost:7000"; 
 
 const useWebSocket = (marketType, exchange, symbol) => {
   const [tradeData, setTradeData] = useState(null);
@@ -10,6 +9,7 @@ const useWebSocket = (marketType, exchange, symbol) => {
 
   useEffect(() => {
     let wsUrl = marketType === "spot" ? SPOT_WS_URL : FUTURES_WS_URL;
+
     const webSocket = new WebSocket(wsUrl);
 
     webSocket.onopen = () => {

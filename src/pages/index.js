@@ -1,6 +1,6 @@
 import { useState } from "react";
 import LiveTrade from "../components/LiveTrade";
-import OHLCV from "../components/OHLCV";
+// import OHLCV from "../components/OHLCV";
 
 export default function Home() {
   const [marketType, setMarketType] = useState("spot");
@@ -12,7 +12,7 @@ export default function Home() {
       <h1 className="text-2xl font-bold">Crypto Trading Dashboard</h1>
 
       {/* OHLCV Data */}
-      <OHLCV />
+      {/* <OHLCV /> */}
 
       {/* Market Type Selection */}
       <div className="mt-4">

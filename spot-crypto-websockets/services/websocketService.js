@@ -1,8 +1,8 @@
 const WebSocket = require("ws");
 const axios = require("axios");
 const http = require("http");
-const symbolMap = require("../models/exchangeModel"); // Required for symbol mapping
-const KucoinAuth = require("../utils/kucoinAuth"); // Required for KuCoin authentication
+const symbolMap = require("../models/exchangeModel"); 
+const KucoinAuth = require("../utils/kucoinAuth"); 
 
 const exchanges = {
   binance: "wss://stream.binance.com:9443/ws",
@@ -35,7 +35,7 @@ wss.on("connection", (ws) => {
 });
 
 // Start WebSocket Server
-server.listen(7000, () => {
+server.listen(6000, () => {
   console.log(" WebSocket Server running on ws://localhost:6000");
 });
 
