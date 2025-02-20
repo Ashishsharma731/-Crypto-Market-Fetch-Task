@@ -1,21 +1,21 @@
 const WebSocket = require("ws");
 const axios = require("axios");
 const http = require("http");
-const symbolMap = require("../models/exchangeModel"); 
-const KucoinAuth = require("../utils/kucoinAuth");
+const symbolMap = require("../models/exchangeModel"); // Required for symbol mapping
+const KucoinAuth = require("../utils/kucoinAuth"); // Required for KuCoin authentication
 
 const exchanges = {
-  binance: "wss://fstream.binance.com/ws",
-  bybit: "wss://stream.bybit.com/v5/public/linear",
-  mexc: "wss://contract.mexc.com/edge",
-  kucoin: "wss://ws-api-futures.kucoin.com/",
+  binance: "wss://stream.binance.com:9443/ws",
+  bybit: "wss://stream.bybit.com/v5/public/spot",
+  mexc: "wss://wbs.mexc.com/ws",
+  kucoin: "wss://ws-api-spot.kucoin.com/",
 };
 
-// Create HTTP server for WebSocket
+// Create an HTTP server for WebSocket
 const server = http.createServer();
 const wss = new WebSocket.Server({ server });
 
-// Store connected clients
+// Store connected WebSocket clients
 const wsClients = new Set();
 
 // Handle new WebSocket connections
@@ -35,7 +35,7 @@ wss.on("connection", (ws) => {
 });
 
 // Start WebSocket Server
-server.listen(6000, () => {
+server.listen(7000, () => {
   console.log(" WebSocket Server running on ws://localhost:6000");
 });
 
@@ -60,7 +60,7 @@ async function connectToExchanges() {
 
 async function getKucoinToken() {
   try {
-    const response = await axios.post("https://api-futures.kucoin.com/api/v1/bullet-public");
+    const response = await axios.post("https://api.kucoin.com/api/v1/bullet-public");
     return response.data.data.token;
   } catch (error) {
     console.error(" Error getting KuCoin token:", error.message);
@@ -94,10 +94,9 @@ function connectWebSocket(exchange, url, message = null) {
 
   ws.on("close", () => {
     console.log(` ${exchange} WebSocket closed. Reconnecting...`);
-    setTimeout(() => connectWebSocket(exchange, url, message), 7000);
+    setTimeout(() => connectWebSocket(exchange, url, message), 9000);
   });
 }
 
 // Start fetching exchange data
-// connectToExchanges();
 module.exports = { connectToExchanges };
