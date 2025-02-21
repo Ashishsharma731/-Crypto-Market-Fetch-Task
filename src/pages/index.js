@@ -13,7 +13,6 @@ export default function Home() {
 
       <OHLCV />
 
-      {/* Market Type Selection */}
       <div className="mt-4">
         <label className="mr-2">Market Type:</label>
         <button
@@ -30,7 +29,6 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Exchange Selection */}
       <div className="mt-4">
         <label className="mr-2">Exchange:</label>
         {["binance", "bybit", "mexc", "kucoin"].map((ex) => (
@@ -44,7 +42,6 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Live Trade Data */}
       <div className="mt-6">
         <LiveTrade marketType={marketType} exchange={exchange} symbol={symbol} />
       </div>
