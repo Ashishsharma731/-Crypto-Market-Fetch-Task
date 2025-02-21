@@ -6,10 +6,6 @@ const exchangeRoutes = require("./routes/exchangeRoutes");
 dotenv.config();
 const app = express();
 
-// app.use(cors({
-//     origin:["http://localhost:5000"],
-//     methods:["GET","POST"]
-// }));
 app.use(cors());
 app.use(express.json());
 

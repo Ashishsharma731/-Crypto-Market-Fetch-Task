@@ -35,8 +35,8 @@ wss.on("connection", (ws) => {
 });
 
 // Start WebSocket Server
-server.listen(6000, () => {
-  console.log(" WebSocket Server running on ws://localhost:6000");
+server.listen(8080, () => {
+  console.log(" WebSocket Server running on ws://localhost:8080");
 });
 
 // Connect to Exchanges and Forward Data

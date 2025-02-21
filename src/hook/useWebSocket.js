@@ -1,45 +1,46 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
-const SPOT_WS_URL = "ws://localhost:6000";   
-const FUTURES_WS_URL = "ws://localhost:7000"; 
+const FUTURES_WS_URL = "ws://localhost:7000";
 
-const useWebSocket = (marketType, exchange, symbol) => {
+const useWebSocket = (exchange, symbol) => {
   const [tradeData, setTradeData] = useState(null);
-  const [ws, setWs] = useState(null);
+  const wsRef = useRef(null);
+  const reconnectTimerRef = useRef(null);
 
   useEffect(() => {
-    let wsUrl = marketType === "spot" ? SPOT_WS_URL : FUTURES_WS_URL;
+    if (wsRef.current) wsRef.current.close(); 
 
-    const webSocket = new WebSocket(wsUrl);
+    const webSocket = new WebSocket(FUTURES_WS_URL);
+    wsRef.current = webSocket;
 
     webSocket.onopen = () => {
-      console.log("Connected to WebSocket Server");
-      const subscribeMessage = JSON.stringify({ exchange, symbol });
-      webSocket.send(subscribeMessage);
+      console.log(" Connected to FUTURES WebSocket");
+      webSocket.send(JSON.stringify({ exchange, symbol }));
     };
 
     webSocket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setTradeData(data);
+      try {
+        const data = JSON.parse(event.data);
+        setTradeData((prev) => (JSON.stringify(prev) !== JSON.stringify(data) ? data : prev));
+      } catch (error) {
+        console.error(" Error parsing FUTURES message:", error);
+      }
     };
 
-    webSocket.onerror = (error) => {
-      console.error("WebSocket Error:", error);
-    };
+    webSocket.onerror = (error) => console.error(" FUTURES WebSocket Error:", error);
 
     webSocket.onclose = () => {
-      console.log("WebSocket Closed. Reconnecting...");
-      setTimeout(() => {
-        setWs(new WebSocket(wsUrl));
+      console.warn(" FUTURES WebSocket Disconnected. Reconnecting...");
+      reconnectTimerRef.current = setTimeout(() => {
+        wsRef.current = new WebSocket(FUTURES_WS_URL);
       }, 5000);
     };
 
-    setWs(webSocket);
-
     return () => {
-      webSocket.close();
+      if (wsRef.current) wsRef.current.close();
+      clearTimeout(reconnectTimerRef.current);
     };
-  }, [marketType, exchange, symbol]);
+  }, [exchange, symbol]);
 
   return tradeData;
 };

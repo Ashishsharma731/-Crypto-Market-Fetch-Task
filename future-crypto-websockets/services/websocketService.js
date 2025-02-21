@@ -34,12 +34,10 @@ wss.on("connection", (ws) => {
   wsClients.add(ws);
 });
 
-// Start WebSocket Server
 server.listen(7000, () => {
   console.log(" WebSocket Server running on ws://localhost:7000");
 });
 
-// Connect to Exchanges and Forward Data
 async function connectToExchanges() {
   const symbol = "BTCUSDT";
 
