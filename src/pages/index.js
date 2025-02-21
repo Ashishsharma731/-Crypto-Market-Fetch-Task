@@ -28,7 +28,7 @@ export default function Home() {
           Futures
         </button>
       </div>
-//===//
+
       <div className="mt-4">
         <label className="mr-2">Exchange:</label>
         {["binance", "bybit", "mexc", "kucoin"].map((ex) => (
