@@ -11,14 +11,11 @@ const exchanges = {
   kucoin: "wss://ws-api-spot.kucoin.com/",
 };
 
-// Create an HTTP server for WebSocket
 const server = http.createServer();
 const wss = new WebSocket.Server({ server });
 
-// Store connected WebSocket clients
 const wsClients = new Set();
 
-// Handle new WebSocket connections
 wss.on("connection", (ws) => {
   console.log(" New Client Connected");
 
@@ -34,12 +31,10 @@ wss.on("connection", (ws) => {
   wsClients.add(ws);
 });
 
-// Start WebSocket Server
 server.listen(8080, () => {
   console.log(" WebSocket Server running on ws://localhost:8080");
 });
 
-// Connect to Exchanges and Forward Data
 async function connectToExchanges() {
   const symbol = "BTCUSDT";
 
