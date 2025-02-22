@@ -84,7 +84,7 @@ function connectWebSocket(exchange, url, message = null) {
   });
 
   ws.on("message", (data) => {
-    console.log(` ${exchange} Data:`, data.toString());
+    // console.log(` ${exchange} Data:`, data.toString());
 
     // Forward data to all connected WebSocket clients
     wsClients.forEach(client => {

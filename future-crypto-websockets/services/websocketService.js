@@ -4,6 +4,7 @@ const http = require("http");
 const symbolMap = require("../models/exchangeModel"); 
 const KucoinAuth = require("../utils/kucoinAuth");
 const symbols = require("./symbols");
+const { log } = require("console");
 
 const exchanges = {
   binance: "wss://fstream.binance.com/ws",
@@ -49,8 +50,10 @@ async function connectToExchanges() {
     }));
 
     connectWebSocket("mexc", exchanges.mexc, JSON.stringify({
-      method: "SUBSCRIPTION",
-      params: [symbolMap.mexc(symbol)],
+      method: "sub.ticker",
+      param: {
+        symbol: formatMEXCSymbol(symbol),
+      }
     }));
 
     const token = await getKucoinToken();
@@ -58,13 +61,20 @@ async function connectToExchanges() {
       connectWebSocket("kucoin", `${exchanges.kucoin}?token=${token}`, JSON.stringify({
         id: "1",
         type: "subscribe",
-        topic: symbolMap.kucoin(symbol),
+        topic: `/contractMarket/level2:${formatKucoinSymbol(symbol)}`,
         response: true,
       }));
     }
   }
 }
 
+const formatMEXCSymbol = (symbol) => {
+  return symbol.includes("_") ? symbol : symbol.replace(/([A-Z]+)(USDT)/, "$1_$2");
+};
+const formatKucoinSymbol = (symbol) => {
+    if (symbol === "BTCUSDT") return "XBTUSDM"; // BTCUSDT → XBTUSDM
+    return symbol.replace(/(ETH|BNB|SOL|XRP|ADA)(USDT)/, "$1USDM"); // ETHUSDT → ETHUSDM
+};
 
 async function getKucoinToken() {
   try {
@@ -88,7 +98,7 @@ function connectWebSocket(exchange, url, message = null) {
   });
 
   ws.on("message", (data) => {
-    console.log(` ${exchange} ${ws.symbol} Data:`, data.toString());
+    // console.log(` ${exchange} ${ws.symbol} Data:`, data.toString());
 
     // Forward data to all connected WebSocket clients
     wsClients.forEach(client => {

@@ -11,22 +11,22 @@ const LiveTrade = ({ marketType, exchange, symbol }) => {
   const getNormalizedSymbol = (exchange, marketType, data) => {
     switch (exchange.toLowerCase()) {
       case "binance":
-        return marketType === "spot" ? data?.s : data?.s; // Futures might wrap in `data` formate"BTCUSDT"
+        return marketType === "spot" ? data?.s : data?.s; // Futures formate"BTCUSDT"
   
       case "bybit":
         return marketType === "spot"    // formate"BTCUSDT"
           ? data?.data?.symbol
-          : data?.data?.symbol; // Futures may use  
+          : data?.data?.symbol;  
   
       case "mexc":
         return marketType === "spot"    //formate"BTCUSDT"
           ? data?.s 
-          : data?.symbol?.replace("_", ""); // Futures may use formate "BTC_USDT"
+          : data?.symbol?.replace("_", ""); // formate "BTC_USDT"
   
       case "kucoin":
         return marketType === "spot"  // formate for spot "BTC-USDT"
           ? data?.data?.symbol?.replace("-", "") 
-          : data?.topic?.split(":")[1] ; // Futures might differ Formate "/contractMarket/level2:XBTUSDM"
+          : data?.topic?.split(":")[1] ; // Formate "/contractMarket/level2:XBTUSDM"
   
       default:
         return data?.symbol || data?.data?.symbol; 
@@ -62,6 +62,8 @@ const LiveTrade = ({ marketType, exchange, symbol }) => {
                 prev?.[sym],
           }));
         } else if (marketType === "futures") {
+          console.log("INSIDE FUTURE", tradeData?.data?.data?.lastPrice);
+          
           setLastPrice((prev) => ({
             ...prev,
             [sym]: tradeData?.data?.p ||
@@ -71,6 +73,7 @@ const LiveTrade = ({ marketType, exchange, symbol }) => {
                 ? tradeData?.data?.data?.change.split(",")[0]
                 : prev?.[sym]),
           }));
+  console.log(lastPrice,"THIS IS LAST PRICE");
   
           setVolume((prev) => ({
             ...prev,
@@ -82,7 +85,7 @@ const LiveTrade = ({ marketType, exchange, symbol }) => {
         }
       }
     });
-  }, [tradeData, exchange, marketType]);
+  }, [tradeData, exchange, marketType, lastPrice]);
   
   return (
     <div className="p-4 bg-gray-800 text-white rounded-md shadow-md">
@@ -102,10 +105,10 @@ const LiveTrade = ({ marketType, exchange, symbol }) => {
             <tr key={sym}>
               <td className="border border-gray-600 px-4 py-2">{sym}</td>
               <td className="border border-gray-600 px-4 py-2">
-                {lastPrice[sym] || "Waiting..."}
+                {parseFloat(lastPrice[sym]).toFixed(3) || "Waiting..."}
               </td>
               <td className="border border-gray-600 px-4 py-2">
-                {volume[sym] || "Waiting..."}
+                {parseFloat(volume[sym]).toFixed(3) || "Waiting..."}
               </td>
             </tr>
           ))}
