@@ -26,7 +26,9 @@ const LiveTrade = ({ marketType, exchange, symbol }) => {
       case "kucoin":
         return marketType === "spot"  // formate for spot "BTC-USDT"
           ? data?.data?.symbol?.replace("-", "") 
-          : data?.topic?.split(":")[1] ; // Formate "/contractMarket/level2:XBTUSDM"
+          : (data?.topic?.split(":")[1]?.includes("USDM") 
+          ? data?.topic?.split(":")[1]?.replace("USDT", "USDM") 
+          : data?.topic?.split(":")[1]); // Formate "/contractMarket/level2:XBTUSDM"
   
       default:
         return data?.symbol || data?.data?.symbol; 
@@ -39,8 +41,8 @@ const LiveTrade = ({ marketType, exchange, symbol }) => {
   
     tradeData.symbol.forEach((sym) => {
       const receivedSymbol = getNormalizedSymbol(exchange, marketType, tradeData.data);
-  
-      if (tradeData.exchange === exchange && receivedSymbol === sym) {
+      
+      if (tradeData.exchange === exchange && receivedSymbol === sym) {        
         if (marketType === "spot") {
           setLastPrice((prev) => ({
             ...prev,
@@ -62,18 +64,15 @@ const LiveTrade = ({ marketType, exchange, symbol }) => {
                 prev?.[sym],
           }));
         } else if (marketType === "futures") {
-          console.log("INSIDE FUTURE", tradeData?.data?.data?.lastPrice);
-          
           setLastPrice((prev) => ({
             ...prev,
             [sym]: tradeData?.data?.p ||
               tradeData?.data?.data?.ask1Price ||
               tradeData?.data?.data?.lastPrice ||
               (tradeData?.data?.topic?.includes("level2")
-                ? tradeData?.data?.data?.change.split(",")[0]
+                ? tradeData?.data?.data?.change?.split(",")[0]
                 : prev?.[sym]),
           }));
-  console.log(lastPrice,"THIS IS LAST PRICE");
   
           setVolume((prev) => ({
             ...prev,
