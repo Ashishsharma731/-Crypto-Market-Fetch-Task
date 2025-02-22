@@ -3,6 +3,7 @@ const axios = require("axios");
 const http = require("http");
 const symbolMap = require("../models/exchangeModel"); 
 const KucoinAuth = require("../utils/kucoinAuth"); 
+const symbols = require("./symbols");
 
 const exchanges = {
   binance: "wss://stream.binance.com:9443/ws",
@@ -36,20 +37,28 @@ server.listen(8080, () => {
 });
 
 async function connectToExchanges() {
-  const symbol = "BTCUSDT";
+  for (const symbol of symbols) {
+    connectWebSocket("binance", `${exchanges.binance}/${symbolMap.binance(symbol)}`);
 
-  connectWebSocket("binance", `${exchanges.binance}/${symbolMap.binance(symbol)}`);
-  connectWebSocket("bybit", exchanges.bybit, JSON.stringify({ op: "subscribe", args: [symbolMap.bybit(symbol)] }));
-  connectWebSocket("mexc", exchanges.mexc, JSON.stringify({ method: "SUBSCRIPTION", params: [symbolMap.mexc(symbol)] }));
-
-  const token = await getKucoinToken();
-  if (token) {
-    connectWebSocket("kucoin", `${exchanges.kucoin}?token=${token}`, JSON.stringify({
-      id: "1",
-      type: "subscribe",
-      topic: symbolMap.kucoin(symbol),
-      response: true,
+    connectWebSocket("bybit", exchanges.bybit, JSON.stringify({
+      op: "subscribe",
+      args: [symbolMap.bybit(symbol)],
     }));
+
+    connectWebSocket("mexc", exchanges.mexc, JSON.stringify({
+      method: "SUBSCRIPTION",
+      params: [symbolMap.mexc(symbol)],
+    }));
+
+    const token = await getKucoinToken();
+    if (token) {
+      connectWebSocket("kucoin", `${exchanges.kucoin}?token=${token}`, JSON.stringify({
+        id: "1",
+        type: "subscribe",
+        topic: symbolMap.kucoin(symbol),
+        response: true,
+      }));
+    }
   }
 }
 
@@ -67,6 +76,8 @@ function connectWebSocket(exchange, url, message = null) {
   console.log(` Connecting to ${exchange} WebSocket...`);
   const ws = new WebSocket(url);
 
+  ws.symbol = symbols;
+
   ws.on("open", () => {
     console.log(` Connected to ${exchange}`);
     if (message) ws.send(message);
@@ -78,7 +89,8 @@ function connectWebSocket(exchange, url, message = null) {
     // Forward data to all connected WebSocket clients
     wsClients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(data.toString());
+        // client.send(data.toString());
+        client.send(JSON.stringify({ exchange, symbol: ws.symbol, data: JSON.parse(data.toString()) }));
       }
     });
   });
