@@ -23,6 +23,18 @@ You can start editing the page by modifying `pages/index.js`. The page auto-upda
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
 
 This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## server
+there are there server 
+spot-crypto-websockets
+future-crypto-websockets
+server-ohlcv
+
+**server-ohlcv**
+this are example of link
+ http://localhost:5000/api/ohlcv?exchange=binance&marketType=spot&symbol=BTCUSDT&interval=1m&limit=100
+ http://localhost:5000/api/ohlcv?exchange=bybit&marketType=futures&symbol=BTCUSDT&interval=1m&limit=10
+ http://localhost:5000/api/ohlcv?exchange=mexc&marketType=spot&symbol=BTCUSDT&interval=1m&limit=100
+ http://localhost:5000/api/ohlcv?exchange=kucoin&marketType=futures&symbol=BTCUSDT&interval=1m&limit=100
 
 ## Learn More
 
